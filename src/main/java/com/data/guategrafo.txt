@@ -2,6 +2,5 @@ Mixco Antigua 30
 Antigua Escuintla 25
 Escuintla SantaLucia 15
 SantaLucia Escuintla 18
-CiudadGuatemala Mixco 10
-CiudadGuatemala Antigua 40
-Mixco CiudadGuatemala 5
+Mixco SantaLucia 25
+SantaLucia Mixco 20

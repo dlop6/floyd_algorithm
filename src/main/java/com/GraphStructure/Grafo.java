@@ -29,8 +29,18 @@ public class Grafo {
         return matrizAdyacencia;
     }
 
-    public void setMatrizAdyacencia(int[][] matrizAdyacencia) {
-        this.matrizAdyacencia = matrizAdyacencia;
+    public void setMatrizAdyacencia(int row, int column, int value) {
+        this.matrizAdyacencia[row][column] = value;
+    }
+
+    public void setInfiniteValues() {
+        for (int i = 0; i < numVertices; i++) {
+            for (int j = 0; j < numVertices; j++) {
+                if (matrizAdyacencia[i][j] == 0) {
+                    matrizAdyacencia[i][j] = Integer.MAX_VALUE;
+                }
+            }
+        }
     }
 
 

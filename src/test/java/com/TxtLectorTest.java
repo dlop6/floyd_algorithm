@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
 public class TxtLectorTest {
 
     private TxtLector txtLector;
-    private final String filePath = "src\\main\\java\\com\\data\\testfile.txt";
+    private final String filePath = "src\\test\\java\\com\\test files\\testfile.txt";
 
     @Before
     public void setUp() {
