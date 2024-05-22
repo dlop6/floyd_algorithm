@@ -5,18 +5,22 @@ import java.util.List;
 import java.util.ArrayList;
 
 import com.GraphStructure.Grafo;
-import com.GraphStructure.Node;
 
 public class FloydAlgorithm {
 
     public static HashMap<Integer, String> nodos = new HashMap<>();
     public  List<String[]> relations = new ArrayList<>();
+    public int[][] distanceMatrix;
+    public int[][] rootGraph;
+    public int size;
+
     public static Grafo grafo;
 
     public int[][] createWeightGraph(String filePath) {
         TxtLector txtLector = new TxtLector();
         relations = txtLector.getRelationsFromTxt(filePath);
         nodos = txtLector.getNodos();
+        this.size = nodos.size();
         grafo = new Grafo(nodos.size());
         for (String[] relation : relations) {
             int origen = txtLector.getKey(relation[0]);
@@ -35,7 +39,7 @@ public class FloydAlgorithm {
         return grafo.getMatrizAdyacencia();
     }
 
-    public int[][][] floydAlgorithm(int[][] matrizAdyacencia, int size) {
+    public void floydAlgorithm(int[][] matrizAdyacencia, int size) {
         int[][] rootGraph = new int[size][size];
         
         for (int i = 0; i < size; i++) {
@@ -58,18 +62,18 @@ public class FloydAlgorithm {
             }
         }
     
-        return new int[][][]{matrizAdyacencia, rootGraph};
+        this.distanceMatrix = matrizAdyacencia;
+        this.rootGraph = rootGraph;
     }
 
-    public int graphCenter(int[][] distanceMatrix, int size) {
-        int[] eccentricities = new int[size];
-    
+    public int graphCenter() {
+        int[] eccentricities = new int[this.size];
         
         for (int i = 0; i < size; i++) {
             int maxDistance = Integer.MIN_VALUE;
             for (int j = 0; j < size; j++) {
-                if (distanceMatrix[i][j] != Integer.MAX_VALUE && distanceMatrix[i][j] > maxDistance) {
-                    maxDistance = distanceMatrix[i][j];
+                if (this.distanceMatrix[i][j] != Integer.MAX_VALUE && this.distanceMatrix[i][j] > maxDistance) {
+                    maxDistance = this.distanceMatrix[i][j];
                 }
             }
             eccentricities[i] = maxDistance;
@@ -78,13 +82,44 @@ public class FloydAlgorithm {
         int center = 0;
         int minEccentricity = Integer.MAX_VALUE;
         for (int i = 0; i < size; i++) {
-            if (eccentricities[i] < minEccentricity) {
+            if (eccentricities[i] < minEccentricity && eccentricities[i] > 0) {
                 minEccentricity = eccentricities[i];
                 center = i;
             }
         }
     
         return center;
+    }
+
+
+    public void shortestPath(String origen, String destino) {
+        int origenID = getNodeID(origen);
+        int destinoID = getNodeID(destino);
+        ArrayList<String> path = new ArrayList<>();
+        int distanciaTotal = this.distanceMatrix[origenID][destinoID];
+
+        if (distanciaTotal == Integer.MAX_VALUE) {
+            System.out.println("No hay una ruta entre " + origen + " y " + destino);
+        } else {
+
+            System.out.println("La distancia entre " + origen + " y " + destino + " es de " + distanciaTotal + " km");
+            System.out.println("La ruta es: ");
+
+            while (origenID != destinoID) {
+                path.add(nodos.get(origenID));
+                origenID = this.rootGraph[origenID][destinoID];
+            }
+
+            path.add(nodos.get(destinoID));
+
+            for (int i = 0; i < path.size(); i++) {
+                if (i == path.size() - 1) {
+                    System.out.println(path.get(i));
+                } else {
+                    System.out.print(path.get(i) + " -> ");
+                }
+            }
+        }
     }
 
     public Grafo getGrafo() {
@@ -101,21 +136,38 @@ public class FloydAlgorithm {
 
     }
 
+    public void showAllRelations() {
+        for (String[] relation : relations) {
+            System.out.println("De "+ relation[0] + " a " + relation[1] + " la ruta es de " + relation[2] + " km") ;
+        }
+    }
 
+    public void showAllNodes() {
+        for (int key : nodos.keySet()) {
+            System.out.println(nodos.get(key));
+        }
+    }
 
+    public HashMap<Integer, String> getNodos() {
+        return nodos;
+    }
+
+    public List<String[]> getRelations() {
+        return relations;
+    }
 
     // main
 
-    public static void main(String[] args) {
-        FloydAlgorithm floydAlgorithm = new FloydAlgorithm();
-        int[][] matrizAdyacencia = floydAlgorithm.createWeightGraph("src\\main\\java\\com\\data\\guategrafo.txt");
-        int[][][] result = floydAlgorithm.floydAlgorithm(matrizAdyacencia, floydAlgorithm.nodos.size());
-        int[][] distanceMatrix = result[0];
-        int[][] rootGraph = result[1];
-        int center = floydAlgorithm.graphCenter(distanceMatrix, floydAlgorithm.nodos.size());
-        System.out.println("El centro del grafo es: " + floydAlgorithm.nodos.get(center));
+    // public static void main(String[] args) {
+    //     FloydAlgorithm floydAlgorithm = new FloydAlgorithm();
+    //     int[][] matrizAdyacencia = floydAlgorithm.createWeightGraph("src\\main\\java\\com\\data\\guategrafo.txt");
+    //     int[][][] result = floydAlgorithm.floydAlgorithm(matrizAdyacencia, floydAlgorithm.nodos.size());
+    //     int[][] distanceMatrix = result[0];
+    //     int[][] rootGraph = result[1];
+    //     int center = floydAlgorithm.graphCenter(distanceMatrix, floydAlgorithm.nodos.size());
+    //     System.out.println("El centro del grafo es: " + floydAlgorithm.nodos.get(center));
     
     
-    } 
+    // } 
 
 }

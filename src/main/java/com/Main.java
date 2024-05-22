@@ -2,12 +2,11 @@ package com;
 
 import java.util.Scanner;
 import com.FloydAlgorithm.FloydAlgorithm;
-
+import com.FloydAlgorithm.TxtLector;
 
 public class Main {
 
     public static void main(String[] args) {
-
 
         System.out.println("BIENVENIDO AL SISTEMA DE RUTAS ENTRE HOSPIALES\n\n");
 
@@ -18,11 +17,8 @@ public class Main {
 
             FloydAlgorithm floydAlgorithm = new FloydAlgorithm();
             int[][] matrizAdyacencia = floydAlgorithm.createWeightGraph("src\\main\\java\\com\\data\\guategrafo.txt");
-            int[][][] floydAlgorithmResult = floydAlgorithm.floydAlgorithm(matrizAdyacencia, matrizAdyacencia.length);
-            int[][] distanceMatrix = floydAlgorithmResult[0];
-            int[][] rootGraph = floydAlgorithmResult[1];
-
-
+            floydAlgorithm.floydAlgorithm(matrizAdyacencia, matrizAdyacencia.length);
+           
             System.out.println("Por favor, seleccione una opción:\n");
             System.out.println("1. Ingresar una nueva ruta");
             System.out.println("2. Eliminar una ruta");
@@ -35,56 +31,88 @@ public class Main {
             option = scanner.nextInt();
 
             switch (option) {
-            case 1:
-                System.out.println("Ingrese el nombre del hospital de origen:");
-                String origen = scanner.next();
-                System.out.println("Ingrese el nombre del hospital de destino:");
-                String destino = scanner.next();
-                System.out.println("Ingrese la distancia entre los hospitales:");
-                int distancia = scanner.nextInt();
-                try {
-                    floydAlgorithm.getGrafo().agregarArista(floydAlgorithm.getNodeID(origen), floydAlgorithm.getNodeID(destino), distancia);
-                    System.out.println("Ruta agregada con éxito.");
-                } catch (Exception e) {
-                    System.out.println("Error al agregar la ruta: " + e.getMessage());
-                }
-                
+                case 1:
+                    System.out.println("Ingrese el nombre del hospital de origen:");
+                    String origen = scanner.next();
+                    System.out.println("Ingrese el nombre del hospital de destino:");
+                    String destino = scanner.next();
+                    System.out.println("Ingrese la distancia entre los hospitales:");
+                    int distancia = scanner.nextInt();
+                    try {
+                        int origenID = floydAlgorithm.getNodeID(origen);
+                        int destinoID = floydAlgorithm.getNodeID(destino);
+                        
+                        if (origenID == -1 || destinoID == -1) {
+                            throw new Exception("Uno de las ubicaciones de los hospitales no existe.");
+                        }
 
-                break;
-            case 2:
-                System.out.println("Ingrese el nombre del hospital de origen:");
-                origen = scanner.next();
-                System.out.println("Ingrese el nombre del hospital de destino:");
-                destino = scanner.next();
-                // Llama al método para eliminar una ruta.
-                break;
-            case 3:
-                // Llama al método para ver todas las rutas.
-                break;
-            case 4:
-                // Llama al método para ver todas las ubicaciones de los hospitales.
-                break;
+                        floydAlgorithm.getGrafo().agregarArista(origenID, destinoID, distancia);
+                        TxtLector.addRelations(floydAlgorithm.getRelations(), origen, destino,
+                                String.valueOf(distancia));
+                        TxtLector.rewriteTxt("src\\main\\java\\com\\data\\guategrafo.txt",
+                                floydAlgorithm.getRelations());
+                        System.out.println("Ruta agregada con éxito.");
+                    } catch (Exception e) {
+                        System.out.println("Error al agregar la ruta: " + e.getMessage());
+                    }
+                    break;
+                case 2:
+                    System.out.println("Ingrese el nombre del hospital de origen:");
+                    String origen2 = scanner.next();
+                    System.out.println("Ingrese el nombre del hospital de destino:");
+                    String destino2 = scanner.next();
 
-            case 5:
-                System.out.println("Ingrese el nombre del hospital de origen:");
-                origen = scanner.next();
-                System.out.println("Ingrese el nombre del hospital de destino:");
-                destino = scanner.next();
-                // Llama al método para ver la ruta más corta entre dos hospitales.
-                break;
-            
-            case 6:
-                // Llama al método para encontrar el centro de operaciones.
-                break;
-            case 7:
-                System.out.println("Gracias por utilizar el sistema de rutas entre hospitales.");
-                break;
-            default:
-                System.out.println("Opción no válida.");
-                break;
+                    try {
+                        int origenID = floydAlgorithm.getNodeID(origen2);
+                        int destinoID = floydAlgorithm.getNodeID(destino2);
+                        if (origenID == -1 || destinoID == -1) {
+                            throw new Exception("Uno de las ubicaciones de los hospitales no existe.");
+                        }
+
+                        floydAlgorithm.getGrafo().removeArista(origenID, destinoID);
+                        TxtLector.removeRelation(floydAlgorithm.getRelations(), origen2, destino2);
+                        TxtLector.rewriteTxt("src\\main\\java\\com\\data\\guategrafo.txt",
+                                floydAlgorithm.getRelations());
+
+                        System.out.println("Ruta eliminada con éxito.");
+                    } catch (Exception e) {
+                        System.out.println("Error al eliminar la ruta: " + e.getMessage());
+                    }
+
+                    break;
+                case 3:
+                    floydAlgorithm.showAllRelations();
+                    break;
+                case 4:
+                    System.out.println("Ubicaciones de los hospitales:");
+                    floydAlgorithm.showAllNodes();
+                    break;
+                case 5:
+                    System.out.println("Ingrese el nombre del hospital de origen:");
+                    String origen3 = scanner.next();
+                    System.out.println("Ingrese el nombre del hospital de destino:");
+                    String destino3 = scanner.next();
+
+                    if (floydAlgorithm.getNodeID(origen3) == -1 || floydAlgorithm.getNodeID(destino3) == -1) {
+                        System.out.println("Uno de las ubicaciones de los hospitales no existe.");
+                        break;
+                    }
+                    
+                    floydAlgorithm.shortestPath(origen3, destino3);
+                    break;
+                case 6:
+                    int center = floydAlgorithm.graphCenter();
+                    System.out.println("El centro de operaciones es: " + floydAlgorithm.getNodos().get(center));
+                    break;
+                case 7:
+                    System.out.println("Gracias por utilizar el sistema de rutas entre hospitales.");
+                    break;
+                default:
+                    System.out.println("Opción no válida.");
+                    break;
             }
         }
 
     }
-    
+
 }

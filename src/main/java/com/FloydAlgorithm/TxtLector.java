@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 
 public class TxtLector {
 
@@ -54,6 +56,46 @@ public class TxtLector {
         return -1;
     }
 
+    public static void addRelations(List<String[]> values, String origen, String destino, String distancia) {
+        boolean matchFound = false;
+
+        for (String[] value : values) {
+            if (value[0].equals(origen) && value[1].equals(destino)) {
+                value[2] = distancia;
+                matchFound = true;
+                break;
+            }
+        }
+
+        if (!matchFound) {
+            values.add(new String[] { origen, destino, distancia });
+        }
+    }
+
+    public static void removeRelation(List<String[]> values, String origen, String destino) {
+        for (String[] value : values) {
+            if (value[0].equals(origen) && value[1].equals(destino)) {
+                values.remove(value);
+                break;
+            }
+        }
+    }
+
+    public static void rewriteTxt(String filePath, List<String[]> values) {
+        try {
+            FileWriter fileWriter = new FileWriter(filePath, false);
+            PrintWriter printWriter = new PrintWriter(fileWriter);
+
+            for (String[] value : values) {
+                printWriter.println(value[0] + " " + value[1] + " " + value[2]);
+            }
+
+            printWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     // main
 
     public static void main(String[] args) {
@@ -62,6 +104,5 @@ public class TxtLector {
         System.out.println("Nodos: ");
         System.out.println(txtLector.getNodos());
     }
-    
 
 }
