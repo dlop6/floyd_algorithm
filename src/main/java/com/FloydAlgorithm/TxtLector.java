@@ -96,13 +96,4 @@ public class TxtLector {
         }
     }
 
-    // main
-
-    public static void main(String[] args) {
-        TxtLector txtLector = new TxtLector();
-        List<String[]> result = txtLector.getRelationsFromTxt("src\\main\\java\\com\\data\\guategrafo.txt");
-        System.out.println("Nodos: ");
-        System.out.println(txtLector.getNodos());
-    }
-
 }

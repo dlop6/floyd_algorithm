@@ -1,7 +1,5 @@
 package com.GraphStructure;
 
-import com.FloydAlgorithm.TxtLector;
-
 
 public class Grafo {
 

@@ -156,18 +156,5 @@ public class FloydAlgorithm {
         return relations;
     }
 
-    // main
-
-    // public static void main(String[] args) {
-    //     FloydAlgorithm floydAlgorithm = new FloydAlgorithm();
-    //     int[][] matrizAdyacencia = floydAlgorithm.createWeightGraph("src\\main\\java\\com\\data\\guategrafo.txt");
-    //     int[][][] result = floydAlgorithm.floydAlgorithm(matrizAdyacencia, floydAlgorithm.nodos.size());
-    //     int[][] distanceMatrix = result[0];
-    //     int[][] rootGraph = result[1];
-    //     int center = floydAlgorithm.graphCenter(distanceMatrix, floydAlgorithm.nodos.size());
-    //     System.out.println("El centro del grafo es: " + floydAlgorithm.nodos.get(center));
-    
-    
-    // } 
 
 }
